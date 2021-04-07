@@ -3,6 +3,7 @@ package envutils
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"reflect"
 	"strings"
@@ -10,7 +11,22 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
+func Marshal(v interface{}, prefix string) ([]byte, error) {
+	m := make(map[string]interface{})
+	err := marshal(v, m, prefix)
+	if err != nil {
+		return nil, err
+	}
+
+	return yaml.Marshal(m)
+}
+
+func Output(data []byte, w io.Writer) error {
+	_, err := w.Write(data)
+	return err
+}
+
+func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 
 	// 获取 v 底层数据结构
 	rv := reflect.Indirect(reflect.ValueOf(v))
@@ -25,8 +41,11 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 	// rt := reflect.TypeOf(v).Elem()
 	rt := Deref(reflect.TypeOf(v))
 
-	// 遍历 struct
-	for i := 0; i < rv.NumField(); i++ {
+	/*
+		遍历 struct
+		Field 为 指针， 且为 nil 是， 不会进行初始化。 因为无法后端真实结构体。
+	*/
+	for i := 0; i < rt.NumField(); i++ {
 		// Field ValueOf
 		fv := rv.Field(i)
 		// Field TypeOf
@@ -39,8 +58,8 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 		// 如果 kind 为 struct， 循环
 		if fv = reflect.Indirect(fv); fv.Kind() == reflect.Struct {
 			// struct 结构图嵌套使用 双下划线
-			prefix = strings.Join([]string{prefix, ft.Name}, "__")
-			_ = ParseEnv(fv.Addr().Interface(), m, prefix)
+			subprefix := strings.Join([]string{prefix, ft.Name}, "__")
+			_ = marshal(fv.Addr().Interface(), m, subprefix)
 		}
 
 		/*

@@ -1,6 +1,7 @@
 package envutils
 
 import (
+	"os"
 	"testing"
 )
 
@@ -12,13 +13,13 @@ type student struct {
 }
 
 type addr struct {
-	Home   string
-	School string `env:""`
+	Home   string `env:"home"`
+	School string `env:"school"`
 }
 
-func TestParseEnv(t *testing.T) {
+func Test_marshal(t *testing.T) {
 	stu := student{
-		Name:   "zhangsan",
+		Name:   "zhangsan2",
 		Age:    20,
 		Gender: false,
 		Addr: addr{
@@ -27,16 +28,21 @@ func TestParseEnv(t *testing.T) {
 		},
 	}
 
+	// stu02 := student{}
+
 	config := &struct {
-		Student student
-		Stud    *student
+		Stud01  student
+		Stud02  *student
+		Address addr
 	}{
-		Student: stu,
-		Stud:    &stu,
+		Stud01: stu,
+		// Stud02: &stu02,
 	}
 
-	m := make(map[string]interface{})
-	_ = ParseEnv(config, m, "APP")
+	// m := make(map[string]interface{})
+	// _ = marshal(config, m, "APP")
 
-	output(m)
+	// output(m)
+	b, _ := Marshal(config, "APP")
+	_ = Output(b, os.Stdout)
 }

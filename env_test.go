@@ -28,9 +28,11 @@ func TestParseEnv(t *testing.T) {
 	}
 
 	config := &struct {
-		Student *student
+		Student student
+		Stud    *student
 	}{
-		Student: &stu,
+		Student: stu,
+		Stud:    &stu,
 	}
 
 	m := make(map[string]interface{})

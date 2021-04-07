@@ -12,32 +12,32 @@ import (
 
 func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 
-	rvPtr := reflect.ValueOf(v)
+	// 获取 v 底层数据结构
+	rv := reflect.Indirect(reflect.ValueOf(v))
 
 	// 判断是否为所需目标
-	if rvPtr.Kind() != reflect.Ptr && rvPtr.Elem().Kind() != reflect.Struct {
-		msg := fmt.Sprintf("want a struct prt , got a %#v", rvPtr.Kind())
+	if rv.Kind() != reflect.Struct {
+		msg := fmt.Sprintf("want a struct , got a %#v", rv.Kind())
 		return fmt.Errorf(msg)
 	}
 
 	// 获取实际 struct 对象
-	rv := reflect.Indirect(rvPtr)
-	rt := reflect.TypeOf(v).Elem()
+	// rt := reflect.TypeOf(v).Elem()
+	rt := Deref(reflect.TypeOf(v))
 
 	// 遍历 struct
 	for i := 0; i < rv.NumField(); i++ {
+		// Field ValueOf
 		fv := rv.Field(i)
+		// Field TypeOf
 		ft := rt.Field(i)
 
 		/*
 			1. 先判断 field 是否为结构体， 以便循环迭代
 		*/
 		// 如果 field kind 为 struct 指针， 获取真实对象
-		if fv.Kind() == reflect.Ptr {
-			fv = fv.Elem()
-		}
 		// 如果 kind 为 struct， 循环
-		if fv.Kind() == reflect.Struct {
+		if fv = reflect.Indirect(fv); fv.Kind() == reflect.Struct {
 			// struct 结构图嵌套使用 双下划线
 			prefix = strings.Join([]string{prefix, ft.Name}, "__")
 			_ = ParseEnv(fv.Addr().Interface(), m, prefix)

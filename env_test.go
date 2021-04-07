@@ -5,15 +5,15 @@ import (
 )
 
 type student struct {
-	Name   string
+	Name   string `env:""`
 	Age    int
-	Gender bool
+	Gender bool `env:""`
 	Addr   addr
 }
 
 type addr struct {
 	Home   string
-	School string
+	School string `env:""`
 }
 
 func TestParseEnv(t *testing.T) {

@@ -29,6 +29,22 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 		fv := rv.Field(i)
 		ft := rt.Field(i)
 
+		/*
+			1. 先判断 field 是否为结构体， 以便循环迭代
+		*/
+		// 如果 field kind 为 struct 指针， 获取真实对象
+		if fv.Kind() == reflect.Ptr {
+			fv = fv.Elem()
+		}
+		// 如果 kind 为 struct， 循环
+		if fv.Kind() == reflect.Struct {
+			base := strings.Join([]string{prefix, ft.Name}, "__")
+			_ = ParseEnv(fv.Addr().Interface(), m, base)
+		}
+
+		/*
+			2. 再判断 field 字段的实际类型， 以免无 env tag 的字段被略过
+		*/
 		// 判断是否存在 env TAG， 且是否有效
 		var name string
 		var ok bool
@@ -41,16 +57,6 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 			name = ft.Name
 		}
 		key := join(prefix, name)
-
-		// 如果 field kind 为 struct 指针， 获取真实对象
-		if fv.Kind() == reflect.Ptr {
-			fv = fv.Elem()
-		}
-		// 如果 kind 为 struct， 循环
-		if fv.Kind() == reflect.Struct {
-			base := strings.Join([]string{prefix, ft.Name}, "__")
-			_ = ParseEnv(fv.Addr().Interface(), m, base)
-		}
 
 		// 根据实际类型处理
 		switch val := fv.Interface().(type) {

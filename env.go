@@ -1,10 +1,8 @@
 package envutils
 
 import (
-	"bytes"
 	"fmt"
 	"io"
-	"os"
 	"reflect"
 	"strings"
 
@@ -94,14 +92,4 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 	}
 
 	return nil
-}
-
-func output(m map[string]interface{}) {
-	data, err := yaml.Marshal(m)
-	if err != nil {
-		panic(err)
-	}
-
-	buf := bytes.NewBuffer(data)
-	_, _ = buf.WriteTo(os.Stdout)
 }

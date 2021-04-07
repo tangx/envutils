@@ -38,8 +38,9 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 		}
 		// 如果 kind 为 struct， 循环
 		if fv.Kind() == reflect.Struct {
-			base := strings.Join([]string{prefix, ft.Name}, "__")
-			_ = ParseEnv(fv.Addr().Interface(), m, base)
+			// struct 结构图嵌套使用 双下划线
+			prefix = strings.Join([]string{prefix, ft.Name}, "__")
+			_ = ParseEnv(fv.Addr().Interface(), m, prefix)
 		}
 
 		/*
@@ -56,7 +57,9 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 		if len(name) == 0 {
 			name = ft.Name
 		}
-		key := join(prefix, name)
+
+		// struct 中 field 嵌套使用 单下划线
+		key := strings.Join([]string{prefix, name}, "_")
 
 		// 根据实际类型处理
 		switch val := fv.Interface().(type) {
@@ -72,10 +75,6 @@ func ParseEnv(v interface{}, m map[string]interface{}, prefix string) error {
 	}
 
 	return nil
-}
-
-func join(basename string, fieldname string) string {
-	return strings.Join([]string{basename, fieldname}, "_")
 }
 
 func output(m map[string]interface{}) {

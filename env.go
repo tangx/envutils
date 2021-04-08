@@ -3,7 +3,9 @@ package envutils
 import (
 	"fmt"
 	"io"
+	"os"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -17,6 +19,23 @@ func Marshal(v interface{}, prefix string) ([]byte, error) {
 	}
 
 	return yaml.Marshal(m)
+}
+
+func UnmarshalFromEnv(v interface{}, prefix string) (err error) {
+
+	// 获取所有 key
+	m := make(map[string]interface{})
+	err = marshal(v, m, prefix)
+	if err != nil {
+		return err
+	}
+
+	// 获取所有环境变量
+	for key := range m {
+		m[key] = os.Getenv(key)
+	}
+
+	return
 }
 
 func Output(data []byte, w io.Writer) error {
@@ -92,4 +111,78 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 	}
 
 	return nil
+}
+
+func unmarshal(v interface{}, prefix string) (err error) {
+	rvPtr := reflect.ValueOf(v)
+
+	if rvPtr.Kind() != reflect.Ptr && rvPtr.Elem().Kind() != reflect.Struct {
+		return fmt.Errorf("want a struct ptr, but got a %#v", rvPtr.Kind())
+	}
+
+	rv := reflect.Indirect(rvPtr)
+	rt := Deref(reflect.TypeOf(v))
+
+	for i := 0; i < rv.NumField(); i++ {
+
+		fv := reflect.Indirect(rv.Field(i))
+		ft := rt.Field(i)
+
+		if fv.Kind() == reflect.Struct {
+			subprefix := strings.Join([]string{prefix, ft.Name}, "__")
+			// fmt.Println("subprefix =", subprefix)
+			err = unmarshal(fv.Addr().Interface(), subprefix)
+			if err != nil {
+				return err
+			}
+			continue
+		}
+
+		name, ok := ft.Tag.Lookup("env")
+		if !ok || name == "-" {
+			continue
+		}
+
+		if len(name) == 0 {
+			name = ft.Name
+		}
+
+		key := strings.Join([]string{prefix, name}, "_")
+		val := os.Getenv(key)
+
+		// fmt.Printf("key(%s) = value(%s)\n", key, val)
+
+		switch fv.Kind() {
+		case reflect.String:
+			fv.SetString(val)
+		case reflect.Bool:
+			b, err := strconv.ParseBool(val)
+			if err != nil {
+				return fmt.Errorf("invalid value type key(%s), value(%s) is not", key, val)
+			}
+			fv.SetBool(b)
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			x, err := strconv.ParseInt(val, 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid value type key(%s), value(%s)", key, val)
+			}
+			fv.SetInt(x)
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			x, err := strconv.ParseUint(val, 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid value type key(%s), value(%s)", key, val)
+			}
+			fv.SetUint(x)
+		case reflect.Float32, reflect.Float64:
+			x, err := strconv.ParseFloat(val, 64)
+			if err != nil {
+				return err
+			}
+			fv.SetFloat(x)
+		default:
+			return fmt.Errorf("unsupported type %v", fv.Type())
+		}
+	}
+
+	return
 }

@@ -67,34 +67,37 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 	*/
 	for i := 0; i < rt.NumField(); i++ {
 		// Field ValueOf
-		fv := rv.Field(i)
+		fv := reflect.Indirect(rv.Field(i))
 		// Field TypeOf
 		ft := rt.Field(i)
-
-		/*
-			1. 先判断 field 是否为结构体， 以便循环迭代
-		*/
-		// 如果 field kind 为 struct 指针， 获取真实对象
-		// 如果 kind 为 struct， 循环
-		if fv = reflect.Indirect(fv); fv.Kind() == reflect.Struct {
-			// struct 结构图嵌套使用 双下划线
-			subprefix := strings.Join([]string{prefix, ft.Name}, "__")
-			_ = marshal(fv.Addr().Interface(), m, subprefix)
-		}
 
 		/*
 			2. 再判断 field 字段的实际类型， 以免无 env tag 的字段被略过
 		*/
 		// 判断是否存在 env TAG， 且是否有效
-		var name string
-		var ok bool
-		if name, ok = ft.Tag.Lookup("env"); !ok || name == "-" {
+		name, ok := ft.Tag.Lookup("env")
+		if name == "-" {
 			continue
 		}
 
 		// name 默认值
 		if len(name) == 0 {
 			name = ft.Name
+		}
+
+		/*
+			1. 先判断 field 是否为结构体， 以便循环迭代
+		*/
+		// 如果 field kind 为 struct 指针， 获取真实对象
+		// 如果 kind 为 struct， 循环
+		if fv.Kind() == reflect.Struct {
+			// struct 结构图嵌套使用 双下划线
+			subprefix := strings.Join([]string{prefix, name}, "__")
+			_ = marshal(fv.Addr().Interface(), m, subprefix)
+		}
+
+		if !ok {
+			continue
 		}
 
 		// struct 中 field 嵌套使用 单下划线

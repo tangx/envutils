@@ -14,6 +14,7 @@ type student struct {
 	Age    int
 	Gender bool `env:""`
 	Addr   addr `env:"addr"`
+	Addr2  addr
 }
 
 type addr struct {
@@ -25,17 +26,22 @@ func Test_marshal(t *testing.T) {
 	os.Setenv("APP__Stud01_Name", "zhugeliang")
 	os.Setenv("APP__Stud01_Age", "500")
 	os.Setenv("APP__Stud01_Gender", "true")
-	os.Setenv("APP__Stud01__addr_home", "sichuan")
+	os.Setenv("APP__Stud01__addr_home", "addr: sichuan")
+	os.Setenv("APP__Stud01__Addr2_home", "addr2: sichuan")
 	os.Setenv("APP__Addr_home", "zhongguo,sichuan,chengdu")
 	os.Setenv("APP__Addr_Home", "APP__Addr_Home")
 	stu := student{
-		// Name:   "zhangsan2",
-		// Age:    20,
-		// Gender: false,
-		// Addr: addr{
-		// 	Home:   "sichuan",
-		// 	School: "chengdu",
-		// },
+		Name:   "zhangsan2",
+		Age:    20,
+		Gender: false,
+		Addr: addr{
+			Home:   "sichuan",
+			School: "chengdu",
+		},
+		Addr2: addr{
+			Home:   "sichuan",
+			School: "chengdu",
+		},
 	}
 
 	// stu02 := student{}
@@ -53,15 +59,15 @@ func Test_marshal(t *testing.T) {
 		// Stud02: &stu02,
 	}
 
-	// m := make(map[string]interface{})
-	// _ = marshal(config, m, "APP")
-
-	// output(m)
+	/* public */
 	var b []byte
 	var err error
-	// b, _ = Marshal(config, "APP")
-	// _ = Output(b, os.Stdout)
 
+	/* marshal */
+	b, _ = Marshal(config, "APP")
+	_ = Output(b, os.Stdout)
+
+	/* unmarshal */
 	err = unmarshal(config, "APP")
 	// fmt.Println(err)
 	if err != nil {

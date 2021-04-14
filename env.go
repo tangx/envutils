@@ -11,6 +11,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Marshal 将结构体转换成对应 []byte
 func Marshal(v interface{}, prefix string) ([]byte, error) {
 	m := make(map[string]interface{})
 	err := marshal(v, m, prefix)
@@ -21,6 +22,7 @@ func Marshal(v interface{}, prefix string) ([]byte, error) {
 	return yaml.Marshal(m)
 }
 
+// UnmarshalFromEnv 从环境变量中赋值结构体
 func UnmarshalFromEnv(v interface{}, prefix string) (err error) {
 
 	// 获取所有 key
@@ -43,6 +45,7 @@ func Output(data []byte, w io.Writer) error {
 	return err
 }
 
+// marshal 将结构体中的 env tag 绑定到 map 中。
 func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 
 	// 获取 v 底层数据结构
@@ -113,6 +116,7 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 	return nil
 }
 
+// unmarshal 从环境变量赋值结构体
 func unmarshal(v interface{}, prefix string) (err error) {
 	rvPtr := reflect.ValueOf(v)
 

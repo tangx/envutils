@@ -132,8 +132,21 @@ func unmarshal(v interface{}, prefix string) (err error) {
 		fv := reflect.Indirect(rv.Field(i))
 		ft := rt.Field(i)
 
+		name, ok := ft.Tag.Lookup("env")
+		// if !ok || name == "-" {
+		// 	continue
+		// }
+		// 如果 env 的值为 - ， 则略过
+		if name == "-" {
+			continue
+		}
+		// 如果 name 为空， 则略过
+		if len(name) == 0 {
+			name = ft.Name
+		}
+
 		if fv.Kind() == reflect.Struct {
-			subprefix := strings.Join([]string{prefix, ft.Name}, "__")
+			subprefix := strings.Join([]string{prefix, name}, "__")
 			// fmt.Println("subprefix =", subprefix)
 			err = unmarshal(fv.Addr().Interface(), subprefix)
 			if err != nil {
@@ -142,13 +155,9 @@ func unmarshal(v interface{}, prefix string) (err error) {
 			continue
 		}
 
-		name, ok := ft.Tag.Lookup("env")
-		if !ok || name == "-" {
+		// 如果非结构体， 且无 env tag 则略过
+		if !ok {
 			continue
-		}
-
-		if len(name) == 0 {
-			name = ft.Name
 		}
 
 		key := strings.Join([]string{prefix, name}, "_")

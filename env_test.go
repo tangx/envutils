@@ -25,7 +25,7 @@ func Test_marshal(t *testing.T) {
 	os.Setenv("APP__Stud01_Name", "zhugeliang")
 	os.Setenv("APP__Stud01_Age", "500")
 	os.Setenv("APP__Stud01_Gender", "true")
-	os.Setenv("APP__Stud01__Addr_home", "sichuan")
+	os.Setenv("APP__Stud01__addr_home", "sichuan")
 	os.Setenv("APP__Addr_home", "zhongguo,sichuan,chengdu")
 	os.Setenv("APP__Addr_Home", "APP__Addr_Home")
 	stu := student{

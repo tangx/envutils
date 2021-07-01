@@ -22,8 +22,8 @@ func Marshal(v interface{}, prefix string) ([]byte, error) {
 	return yaml.Marshal(m)
 }
 
-// UnmarshalFromEnv 从环境变量中赋值结构体
-func UnmarshalFromEnv(v interface{}, prefix string) (err error) {
+// LoadEnv 从环境变量中赋值结构体
+func LoadEnv(v interface{}, prefix string) (err error) {
 
 	// 获取所有 key
 	m := make(map[string]interface{})
@@ -37,7 +37,7 @@ func UnmarshalFromEnv(v interface{}, prefix string) (err error) {
 		m[key] = os.Getenv(key)
 	}
 
-	return
+	return unmarshal(v, prefix)
 }
 
 func Output(data []byte, w io.Writer) error {

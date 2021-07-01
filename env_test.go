@@ -12,8 +12,8 @@ import (
 type student struct {
 	Name   string `env:""`
 	Age    int
-	Gender bool `env:""`
-	Addr   addr `env:"addr"`
+	gender bool `env:""` // 小写将被忽略
+	Addr   addr // struct, 将跟踪到下层
 	addr2  addr
 }
 
@@ -33,7 +33,7 @@ func Test_marshal(t *testing.T) {
 	stu := student{
 		Name:   "zhangsan2",
 		Age:    20,
-		Gender: false,
+		gender: false,
 		Addr: addr{
 			Home:   "sichuan",
 			School: "chengdu",

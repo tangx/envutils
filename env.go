@@ -68,6 +68,12 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 	for i := 0; i < rt.NumField(); i++ {
 		// Field ValueOf
 		fv := reflect.Indirect(rv.Field(i))
+		// 如果 fv 是 unexported, 小写,私有
+		// https://golang.org/pkg/reflect/#Value.CanInterface
+		if !fv.CanInterface() {
+			continue
+		}
+
 		// Field TypeOf
 		ft := rt.Field(i)
 
@@ -90,7 +96,7 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 		*/
 		// 如果 field kind 为 struct 指针， 获取真实对象
 		// 如果 kind 为 struct， 循环
-		if fv.Kind() == reflect.Struct && fv.CanInterface() {
+		if fv.Kind() == reflect.Struct {
 			// struct 结构图嵌套使用 双下划线
 			subprefix := strings.Join([]string{prefix, name}, "__")
 			_ = marshal(fv.Addr().Interface(), m, subprefix)
@@ -133,6 +139,12 @@ func unmarshal(v interface{}, prefix string) (err error) {
 	for i := 0; i < rv.NumField(); i++ {
 
 		fv := reflect.Indirect(rv.Field(i))
+		// 如果 fv 是 unexported, 小写,私有
+		// https://golang.org/pkg/reflect/#Value.CanInterface
+		if !fv.CanInterface() {
+			continue
+		}
+
 		ft := rt.Field(i)
 
 		name, ok := ft.Tag.Lookup("env")
@@ -148,7 +160,7 @@ func unmarshal(v interface{}, prefix string) (err error) {
 			name = ft.Name
 		}
 
-		if fv.Kind() == reflect.Struct && fv.CanInterface() {
+		if fv.Kind() == reflect.Struct {
 			subprefix := strings.Join([]string{prefix, name}, "__")
 			// fmt.Println("subprefix =", subprefix)
 			err = unmarshal(fv.Addr().Interface(), subprefix)

@@ -57,7 +57,7 @@ func Test_marshal(t *testing.T) {
 
 	/* marshal */
 	b, _ := Marshal(config, "APP")
-	_ = Output(b, os.Stdout)
+	_ = output(b, os.Stdout)
 
 }
 
@@ -82,5 +82,5 @@ func Test_LoadEnv(t *testing.T) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_ = Output(b, os.Stdout)
+	_ = output(b, os.Stdout)
 }

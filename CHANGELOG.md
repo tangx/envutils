@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.1.0](https://github.com/tangx/envutils/compare/v0.0.1...v0.1.0)
+
+### Features
+
+* **feat** 使用结构体方法设置默认是 ([11c3dc1](https://github.com/tangx/envutils/commit/11c3dc16f8adaf57897d05d09754e3700ed01d5d))
+
+
+
 # [0.0.1](https://github.com/tangx/envutils/compare/v0.0.0...v0.0.1)
 
 ### Bug Fixes

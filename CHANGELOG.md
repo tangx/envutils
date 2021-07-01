@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.0.1](https://github.com/tangx/envutils/compare/v0.0.0...v0.0.1)
+
+### Bug Fixes
+
+* **fix** load env error ([9db1980](https://github.com/tangx/envutils/commit/9db198087aa0a263f6140aa1891254f375f357d9))
+
+
+
 # 0.0.0
 
 ### Bug Fixes

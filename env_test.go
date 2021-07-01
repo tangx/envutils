@@ -14,7 +14,7 @@ type student struct {
 	Age    int
 	Gender bool `env:""`
 	Addr   addr `env:"addr"`
-	Addr2  addr
+	addr2  addr
 }
 
 type addr struct {
@@ -27,7 +27,7 @@ func Test_marshal(t *testing.T) {
 	os.Setenv("APP__Stud01_Age", "500")
 	os.Setenv("APP__Stud01_Gender", "true")
 	os.Setenv("APP__Stud01__addr_home", "addr: sichuan")
-	os.Setenv("APP__Stud01__Addr2_home", "addr2: sichuan")
+	os.Setenv("APP__Stud01__addr2_home", "addr2: sichuan")
 	os.Setenv("APP__Addr_home", "zhongguo,sichuan,chengdu")
 	os.Setenv("APP__Addr_Home", "APP__Addr_Home")
 	stu := student{
@@ -38,7 +38,7 @@ func Test_marshal(t *testing.T) {
 			Home:   "sichuan",
 			School: "chengdu",
 		},
-		Addr2: addr{
+		addr2: addr{
 			Home:   "sichuan",
 			School: "chengdu",
 		},

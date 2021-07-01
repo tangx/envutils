@@ -90,7 +90,7 @@ func marshal(v interface{}, m map[string]interface{}, prefix string) error {
 		*/
 		// 如果 field kind 为 struct 指针， 获取真实对象
 		// 如果 kind 为 struct， 循环
-		if fv.Kind() == reflect.Struct {
+		if fv.Kind() == reflect.Struct && fv.CanInterface() {
 			// struct 结构图嵌套使用 双下划线
 			subprefix := strings.Join([]string{prefix, name}, "__")
 			_ = marshal(fv.Addr().Interface(), m, subprefix)
@@ -148,7 +148,7 @@ func unmarshal(v interface{}, prefix string) (err error) {
 			name = ft.Name
 		}
 
-		if fv.Kind() == reflect.Struct {
+		if fv.Kind() == reflect.Struct && fv.CanInterface() {
 			subprefix := strings.Join([]string{prefix, name}, "__")
 			// fmt.Println("subprefix =", subprefix)
 			err = unmarshal(fv.Addr().Interface(), subprefix)

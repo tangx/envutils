@@ -29,7 +29,7 @@ func marshal(rv reflect.Value, m map[string]interface{}, prefix string) error {
 		fv := reflect.Indirect(rv.Field(i))
 		// 如果 fv 是 unexported, 小写,私有
 		// https://golang.org/pkg/reflect/#Value.CanInterface
-		if !fv.CanInterface() {
+		if fv.IsValid() && !fv.CanInterface() {
 			continue
 		}
 

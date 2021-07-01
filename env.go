@@ -2,7 +2,6 @@ package envutils
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"reflect"
 
@@ -55,7 +54,8 @@ func LoadEnv(v interface{}, prefix string) (err error) {
 	return unmarshal(rv, prefix)
 }
 
-func output(data []byte, w io.Writer) error {
-	_, err := w.Write(data)
-	return err
+// SetDefaults 调用 Init 和 SetDefualts 方法设置默认值。
+func SetDefaults(v interface{}) error {
+	rv := reflect.ValueOf(v)
+	return setDefaults(rv)
 }

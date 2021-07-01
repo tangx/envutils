@@ -1,6 +1,8 @@
 package envutils
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"os"
 	"testing"
@@ -11,14 +13,23 @@ import (
 type student struct {
 	Name   string `env:""`
 	Age    int
-	gender bool `env:""` // 小写将被忽略
-	Addr   addr // struct, 将跟踪到下层
+	gender bool  `env:""` // 小写将被忽略
+	Addr   *addr // struct, 将跟踪到下层
 	addr2  addr
+}
+
+func (s *student) Init() {
+	s.Name = "caocao"
+	s.Age = 100
 }
 
 type addr struct {
 	Home   string `env:"home"`
 	School string `env:"school"`
+}
+
+func (a *addr) Init() {
+	a.Home = "changshaaaaaaaaa"
 }
 
 var (
@@ -34,11 +45,11 @@ var (
 )
 
 func Test_marshal(t *testing.T) {
-	stu := student{
+	stu := &student{
 		Name:   "zhangsan2",
 		Age:    20,
 		gender: false,
-		Addr: addr{
+		Addr: &addr{
 			Home:   "sichuan",
 			School: "chengdu",
 		},
@@ -51,7 +62,7 @@ func Test_marshal(t *testing.T) {
 		Stud01 *student
 		Addr   addr
 	}{
-		Stud01: &stu,
+		Stud01: stu,
 		Addr:   addr{},
 	}
 
@@ -83,4 +94,35 @@ func Test_LoadEnv(t *testing.T) {
 		log.Fatal(err)
 	}
 	_ = output(b, os.Stdout)
+}
+
+func Test_CallMethod(t *testing.T) {
+	stu := &student{
+		Addr: &addr{},
+	}
+
+	config := &struct {
+		Student *student
+	}{
+		Student: stu,
+	}
+
+	err := SetDefaults(config)
+	if err != nil {
+		panic(err)
+	}
+
+	// fmt.Println(config.Student)
+	// fmt.Println(config.Student.Addr)
+
+	b, err := Marshal(config, "APP")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%s\n", b)
+}
+
+func output(data []byte, w io.Writer) error {
+	_, err := w.Write(data)
+	return err
 }

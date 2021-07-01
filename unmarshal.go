@@ -23,7 +23,7 @@ func unmarshal(rv reflect.Value, prefix string) (err error) {
 		fv := reflect.Indirect(rv.Field(i))
 		// 如果 fv 是 unexported, 小写,私有
 		// https://golang.org/pkg/reflect/#Value.CanInterface
-		if !fv.CanInterface() {
+		if fv.IsValid() && !fv.CanInterface() {
 			continue
 		}
 

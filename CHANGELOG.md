@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.2.0](https://github.com/tangx/envutils/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **feat** 增加读取文件 ([cbb5b90](https://github.com/tangx/envutils/commit/cbb5b901670a2ad9a0f36fea2af1b40884bea183))
+
+
+
 # [0.1.0](https://github.com/tangx/envutils/compare/v0.0.1...v0.1.0)
 
 ### Features

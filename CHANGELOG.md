@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.2.1](https://github.com/tangx/envutils/compare/v0.2.0...v0.2.1)
+
+### Bug Fixes
+
+* **fix** lost value when trans env string slice into map ([ca10e1c](https://github.com/tangx/envutils/commit/ca10e1c057193283ef308ae708ef421de3d1ec1b))
+
+
+
 # [0.2.0](https://github.com/tangx/envutils/compare/v0.1.0...v0.2.0)
 
 ### Features

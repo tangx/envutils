@@ -28,30 +28,28 @@ func Marshal(v interface{}, prefix string) ([]byte, error) {
 	return yaml.Marshal(m)
 }
 
-// LoadEnv 从环境变量中赋值结构体
-func LoadEnv(v interface{}, prefix string) (err error) {
+// UnmarshalEnv 从环境变量中赋值结构体
+func UnmarshalEnv(v interface{}, prefix string) error {
 	rv := reflect.ValueOf(v)
-	if rv.Kind() != reflect.Ptr {
+	if rv.Kind() != reflect.Ptr && rv.Elem().Kind() != reflect.Struct {
 		return fmt.Errorf("want a struct ptr, got a %v", rv.Kind())
 	}
 
-	// 获取所有 key
-	m := make(map[string]interface{})
+	return unmarshalEnv(rv, prefix)
+}
 
-	// 获取 v 底层数据结构
-	rv = reflect.Indirect(rv)
-
-	err = marshal(rv, m, prefix)
+func UnmarshalFile(v interface{}, prefix string, file string) error {
+	data, err := os.ReadFile(file)
 	if err != nil {
 		return err
 	}
 
-	// 获取所有环境变量
-	for key := range m {
-		m[key] = os.Getenv(key)
+	rv := reflect.ValueOf(v)
+	if rv.Kind() != reflect.Ptr && rv.Elem().Kind() != reflect.Struct {
+		return fmt.Errorf("want a struct ptr, got a %v", rv.Kind())
 	}
 
-	return unmarshal(rv, prefix)
+	return unmarshalFile(rv, prefix, data)
 }
 
 // SetDefaults 调用 Init 和 SetDefualts 方法设置默认值。

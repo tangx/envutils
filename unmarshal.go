@@ -6,16 +6,41 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
-// unmarshal 从环境变量赋值结构体
-func unmarshal(rv reflect.Value, prefix string) (err error) {
+func unmarshalFile(rv reflect.Value, prefix string, data []byte) error {
+	m := make(map[string]string)
 
-	if rv.Kind() != reflect.Struct {
-		return fmt.Errorf("want a struct ptr, but got a %#v", rv.Kind())
+	err := yaml.Unmarshal(data, &m)
+	if err != nil {
+		return err
 	}
 
+	return unmarshal(rv, prefix, m)
+}
+
+func unmarshalEnv(rv reflect.Value, prefix string) error {
+	m := make(map[string]string)
+	envs := os.Environ()
+
+	for _, pair := range envs {
+		kv := strings.Split(pair, "=")
+		m[kv[0]] = kv[1]
+	}
+
+	return unmarshal(rv, prefix, m)
+}
+
+// unmarshal 从环境变量赋值结构体
+func unmarshal(rv reflect.Value, prefix string, m map[string]string) (err error) {
 	rv = reflect.Indirect(rv)
+
+	if rv.Kind() != reflect.Struct {
+		return fmt.Errorf("want a struct, but got a %#v", rv.Kind().String())
+	}
+
 	rt := rv.Type()
 
 	for i := 0; i < rv.NumField(); i++ {
@@ -45,7 +70,7 @@ func unmarshal(rv reflect.Value, prefix string) (err error) {
 		if fv.Kind() == reflect.Struct {
 			subprefix := strings.Join([]string{prefix, name}, "__")
 			// fmt.Println("subprefix =", subprefix)
-			err = unmarshal(fv, subprefix)
+			err = unmarshal(fv, subprefix, m)
 			if err != nil {
 				return err
 			}
@@ -58,7 +83,11 @@ func unmarshal(rv reflect.Value, prefix string) (err error) {
 		}
 
 		key := strings.Join([]string{prefix, name}, "_")
-		val := os.Getenv(key)
+		// val := os.Getenv(key)
+		val, ok := m[key]
+		if !ok {
+			continue
+		}
 
 		// fmt.Printf("key(%s) = value(%s)\n", key, val)
 

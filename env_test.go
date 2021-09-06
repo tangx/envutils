@@ -41,7 +41,8 @@ var (
 	_ = os.Setenv("APP__Addr_home", "zhongguo,sichuan,chengdu")
 	_ = os.Setenv("APP__Addr_Home", "APP__Addr_Home")
 
-	APPNAME = "APP"
+	APPNAME     = "APP"
+	CONFIG_FILE = `config.yml`
 )
 
 func Test_marshal(t *testing.T) {
@@ -69,10 +70,10 @@ func Test_marshal(t *testing.T) {
 	/* marshal */
 	b, _ := Marshal(config, "APP")
 	_ = output(b, os.Stdout)
-
+	os.WriteFile(CONFIG_FILE, b, 0644)
 }
 
-func Test_LoadEnv(t *testing.T) {
+func Test_UnmarshalEnv(t *testing.T) {
 	stu := student{}
 	config := &struct {
 		Stud01 *student
@@ -82,9 +83,31 @@ func Test_LoadEnv(t *testing.T) {
 		Addr:   addr{},
 	}
 
-	LoadEnv(config, APPNAME)
 	/* unmarshal */
-	err := LoadEnv(config, APPNAME)
+	err := UnmarshalEnv(config, APPNAME)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	b, err := yaml.Marshal(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_ = output(b, os.Stdout)
+}
+
+func Test_UnmarshalFile(t *testing.T) {
+	stu := student{}
+	config := &struct {
+		Stud01 *student
+		Addr   addr
+	}{
+		Stud01: &stu,
+		Addr:   addr{},
+	}
+
+	/* unmarshal */
+	err := UnmarshalFile(config, APPNAME, CONFIG_FILE)
 	if err != nil {
 		log.Fatal(err)
 	}

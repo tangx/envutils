@@ -27,7 +27,7 @@ func unmarshalEnv(rv reflect.Value, prefix string) error {
 
 	for _, pair := range envs {
 		kv := strings.Split(pair, "=")
-		m[kv[0]] = kv[1]
+		m[kv[0]] = strings.Join(kv[1:], "=")
 	}
 
 	return unmarshal(rv, prefix, m)

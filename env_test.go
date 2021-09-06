@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -70,7 +71,7 @@ func Test_marshal(t *testing.T) {
 	/* marshal */
 	b, _ := Marshal(config, "APP")
 	_ = output(b, os.Stdout)
-	os.WriteFile(CONFIG_FILE, b, 0644)
+	_ = os.WriteFile(CONFIG_FILE, b, 0644)
 }
 
 func Test_UnmarshalEnv(t *testing.T) {
@@ -148,4 +149,21 @@ func Test_CallMethod(t *testing.T) {
 func output(data []byte, w io.Writer) error {
 	_, err := w.Write(data)
 	return err
+}
+
+func Test_ReadEnv(t *testing.T) {
+
+	err := os.Setenv("MY_VARS", "key1=value1, key2=value2")
+	_ = os.Setenv("Emtpy_VARS", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	envs := os.Environ()
+
+	for _, pair := range envs {
+		kv := strings.Split(pair, "=")
+		fmt.Printf("key =>%s , value ->%s\n", kv[0], strings.Join(kv[1:], "="))
+	}
+
 }

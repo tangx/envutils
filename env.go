@@ -52,8 +52,13 @@ func UnmarshalFile(v interface{}, prefix string, file string) error {
 	return unmarshalFile(rv, prefix, data)
 }
 
-// SetDefaults 调用 Init 和 SetDefualts 方法设置默认值。
-func SetDefaults(v interface{}) error {
+// CallSetDefaults 调用 Init 和 SetDefualts 方法设置默认值。
+func CallSetDefaults(v interface{}) error {
 	rv := reflect.ValueOf(v)
-	return setDefaults(rv)
+	return methodCaller(rv, "SetDefaults")
+}
+
+func CallInit(v interface{}) error {
+	rv := reflect.ValueOf(v)
+	return methodCaller(rv, "Init")
 }

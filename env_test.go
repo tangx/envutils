@@ -131,7 +131,7 @@ func Test_CallMethod(t *testing.T) {
 		Student: stu,
 	}
 
-	err := SetDefaults(config)
+	err := CallSetDefaults(config)
 	if err != nil {
 		panic(err)
 	}

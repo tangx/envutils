@@ -5,14 +5,14 @@ import (
 	"reflect"
 )
 
-func setDefaults(rv reflect.Value) error {
+func methodCaller(rv reflect.Value, methods ...string) error {
 
 	if rv.Kind() != reflect.Ptr || rv.Elem().Kind() != reflect.Struct {
 		return fmt.Errorf("want a struct prt, got a %v of %v", rv.Kind(), rv.Elem().Kind())
 	}
 
 	// call Method: Init and SetDefaults
-	for _, method := range []string{"SetDefaults", "Init"} {
+	for _, method := range methods {
 		mv := rv.MethodByName(method)
 		if mv.IsValid() {
 			mv.Call(nil)
@@ -30,7 +30,7 @@ func setDefaults(rv reflect.Value) error {
 			continue
 		}
 
-		if err := setDefaults(fv); err != nil {
+		if err := methodCaller(fv, methods...); err != nil {
 			return err
 		}
 

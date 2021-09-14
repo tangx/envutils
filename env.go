@@ -60,5 +60,5 @@ func CallSetDefaults(v interface{}) error {
 
 func CallInit(v interface{}) error {
 	rv := reflect.ValueOf(v)
-	return methodCaller(rv, "Init")
+	return methodCaller(rv, "SetDefaults", "Init")
 }

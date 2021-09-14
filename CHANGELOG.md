@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.0](https://github.com/tangx/envutils/compare/v0.2.1...v0.3.0)
+
+### Features
+
+* **feat** break change , renmae method caller ([923a833](https://github.com/tangx/envutils/commit/923a83399419a1229eea30581ccd521db42e5fbc))
+
+
+
 # [0.2.1](https://github.com/tangx/envutils/compare/v0.2.0...v0.2.1)
 
 ### Bug Fixes

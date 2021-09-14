@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.1](https://github.com/tangx/envutils/compare/v0.3.0...v0.3.1)
+
+### Bug Fixes
+
+* **fix** call SetDefaults before Init ([8c31483](https://github.com/tangx/envutils/commit/8c314832988f4ed228bc9a8482f1460404df3b1b))
+
+
+
 # [0.3.0](https://github.com/tangx/envutils/compare/v0.2.1...v0.3.0)
 
 ### Features

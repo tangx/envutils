@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.2](https://github.com/tangx/envutils/compare/v0.3.1...v0.3.2)
+
+### Bug Fixes
+
+* **fix** CallMethods 增加自定义方法调用 ([89fc7aa](https://github.com/tangx/envutils/commit/89fc7aadf53021de19288c59e900d6908544b773))
+
+
+
 # [0.3.1](https://github.com/tangx/envutils/compare/v0.3.0...v0.3.1)
 
 ### Bug Fixes

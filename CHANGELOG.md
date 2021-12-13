@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.3](https://github.com/tangx/envutils/compare/v0.3.2...v0.3.3)
+
+### Bug Fixes
+
+* **fix** env - skip ([6ba3c68](https://github.com/tangx/envutils/commit/6ba3c6894d0279f57d3d88fa72d68be996af7cf7))
+
+
+
 # [0.3.2](https://github.com/tangx/envutils/compare/v0.3.1...v0.3.2)
 
 ### Bug Fixes

@@ -20,8 +20,18 @@ func methodCaller(rv reflect.Value, methods ...string) error {
 	}
 
 	rv = reflect.Indirect(rv)
+	rt := rv.Type()
 	for i := 0; i < rv.NumField(); i++ {
 		fv := rv.Field(i)
+		ft := rt.Field(i)
+
+		tag, ok := ft.Tag.Lookup("env")
+		if !ok {
+			continue
+		}
+		if tag == "-" {
+			continue
+		}
 
 		if !fv.CanInterface() {
 			continue

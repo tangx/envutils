@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.4](https://github.com/tangx/envutils/compare/v0.3.3...v0.3.4)
+
+### Bug Fixes
+
+* **fix** fix default name with no tag env ([ce9f1f1](https://github.com/tangx/envutils/commit/ce9f1f1feb4c1a2790978cc2ad0bf11186dfcad5))
+
+
+
 # [0.3.3](https://github.com/tangx/envutils/compare/v0.3.2...v0.3.3)
 
 ### Bug Fixes

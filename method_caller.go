@@ -25,10 +25,8 @@ func methodCaller(rv reflect.Value, methods ...string) error {
 		fv := rv.Field(i)
 		ft := rt.Field(i)
 
-		tag, ok := ft.Tag.Lookup("env")
-		if !ok {
-			continue
-		}
+		tag, _ := ft.Tag.Lookup("env")
+
 		if tag == "-" {
 			continue
 		}
@@ -36,6 +34,7 @@ func methodCaller(rv reflect.Value, methods ...string) error {
 		if !fv.CanInterface() {
 			continue
 		}
+
 		if fv.Kind() != reflect.Ptr || fv.Elem().Kind() != reflect.Struct {
 			continue
 		}

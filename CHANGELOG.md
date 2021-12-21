@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.5](https://github.com/tangx/envutils/compare/v0.3.4...v0.3.5)
+
+### Bug Fixes
+
+* **fix** 当字段对象类型为指针，且值为 nil 时， 使用反射进行初始化 ([a6192b8](https://github.com/tangx/envutils/commit/a6192b8b5ffaf4ffa9d0081b6dff4c8913649133))
+
+
+
 # [0.3.4](https://github.com/tangx/envutils/compare/v0.3.3...v0.3.4)
 
 ### Bug Fixes

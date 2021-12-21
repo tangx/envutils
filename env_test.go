@@ -167,3 +167,34 @@ func Test_ReadEnv(t *testing.T) {
 	}
 
 }
+
+type Manager struct {
+	ClassName  string `env:""`
+	Filesystem *FileSystem
+	FFSys      FileSystem
+}
+
+type FileSystem struct {
+	DirPath string `env:""`
+}
+
+func (fs *FileSystem) SetDefaults() {
+	if fs.DirPath == "" {
+		fs.DirPath = "set-default"
+	}
+}
+
+func Test_ConfP(t *testing.T) {
+
+	config := &struct {
+		Manager *Manager
+	}{
+		Manager: &Manager{},
+	}
+
+	data, err := Marshal(config, "CONFIG")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%s\n", data)
+}

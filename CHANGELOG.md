@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.7](https://github.com/tangx/envutils/compare/v0.3.6...v0.3.7)
+
+### Bug Fixes
+
+* **fix** 取消 fv.Set() 修改对象， 避免对象没有 SetDefaults() 和 Init() 而错误初始化引发的 panic ([acf5b01](https://github.com/tangx/envutils/commit/acf5b013316d75f52bdd1b00e666cdf6dc0ff536))
+
+
+
 # [0.3.6](https://github.com/tangx/envutils/compare/v0.3.5...v0.3.6)
 
 ### Bug Fixes

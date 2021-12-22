@@ -42,10 +42,14 @@ func marshal(rv reflect.Value, m map[string]interface{}, prefix string) error {
 
 		// 2. 判断 fv 是否为 nil， 如果是尝试初始化
 		fv := rv.Field(i)
+		// if fv.Kind() == reflect.Ptr && fv.IsNil() && fv.CanSet() {
 		if fv.Kind() == reflect.Ptr && fv.IsNil() && fv.CanSet() {
-			// 注意: 反射对象要使用 Set() 方法，不能直接赋值。
-			// fv = new(ft.Type)
-			fv.Set(newValue(ft.Type))
+			// 注意: 反射对象要使用 Set() 方法，不能直接赋值。 否则无法在原对象上生效。
+			// fv.Set(newValue(ft.Type))
+
+			// 但是，该函数是为了获取结构体字段并渲染配置， 并不需要真正的修改原对象。
+			// 否则当对象没有 SetDefaults 和 Init 方法的时候， 会造成内部字段 nil 而引发 panic
+			fv = newValue(ft.Type)
 		}
 
 		// Field ValueOf
@@ -95,16 +99,11 @@ func marshal(rv reflect.Value, m map[string]interface{}, prefix string) error {
 // newValue return a reflect.Value for speified reflect.Type
 func newValue(typ reflect.Type) reflect.Value {
 	typ = deref(typ)
-	val := reflect.New(typ)
+	rv := reflect.New(typ)
 
-	// set defaults and initial
-	v := val.Interface()
-	if d, ok := v.(Defualter); ok {
-		d.SetDefaults()
-	}
-	if i, ok := v.(Initialler); ok {
-		i.Init()
+	if err := callSetDefaults(rv); err != nil {
+		panic(err)
 	}
 
-	return val
+	return rv
 }

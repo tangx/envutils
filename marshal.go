@@ -42,7 +42,7 @@ func marshal(rv reflect.Value, m map[string]interface{}, prefix string) error {
 
 		// 2. 判断 fv 是否为 nil， 如果是尝试初始化
 		fv := rv.Field(i)
-		if fv.Kind() == reflect.Ptr && fv.IsNil() {
+		if fv.Kind() == reflect.Ptr && fv.IsNil() && fv.CanSet() {
 			// 注意: 反射对象要使用 Set() 方法，不能直接赋值。
 			// fv = new(ft.Type)
 			fv.Set(newValue(ft.Type))

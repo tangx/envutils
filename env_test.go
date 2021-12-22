@@ -171,6 +171,7 @@ func Test_ReadEnv(t *testing.T) {
 type Manager struct {
 	ClassName  string `env:""`
 	Filesystem *FileSystem
+	filesystem *FileSystem
 	FFSys      FileSystem
 }
 

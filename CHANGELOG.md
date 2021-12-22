@@ -5,6 +5,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+# [0.3.6](https://github.com/tangx/envutils/compare/v0.3.5...v0.3.6)
+
+### Bug Fixes
+
+* **fix** private filed no need to set ([b7f7c0f](https://github.com/tangx/envutils/commit/b7f7c0f8543d2e3838fc5ad73c3112bb6263d0b5))
+
+
+
 # [0.3.5](https://github.com/tangx/envutils/compare/v0.3.4...v0.3.5)
 
 ### Bug Fixes

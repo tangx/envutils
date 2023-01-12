@@ -38,6 +38,7 @@ func UnmarshalEnv(v interface{}, prefix string) error {
 	return unmarshalEnv(rv, prefix)
 }
 
+// UnmarshalFile 从环境变量中赋值结构体
 func UnmarshalFile(v interface{}, prefix string, file string) error {
 	data, err := os.ReadFile(file)
 	if err != nil {

@@ -19,8 +19,8 @@ type student struct {
 	addr2  addr
 }
 
-func (s *student) Init() {
-	s.Name = "caocao"
+func (s *student) SetDefaults() {
+	s.Name = "zhangsan"
 	s.Age = 100
 }
 

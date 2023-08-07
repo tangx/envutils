@@ -57,7 +57,7 @@ func Import(prefix string, config interface{}, cfgs ...string) error {
 	}
 
 	// set default and initial
-	return CallSetDefaults(config)
+	return CallMethods(config, "SetDefaults", "Initialize")
 }
 
 // MustImport import variable from config.yml and additional config files and environment, panic if error

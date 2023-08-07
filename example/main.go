@@ -9,6 +9,7 @@ import (
 
 func main() {
 	read()
+	dump()
 }
 
 var (

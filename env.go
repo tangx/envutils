@@ -53,7 +53,7 @@ func UnmarshalFile(v interface{}, prefix string, file string) error {
 	return unmarshalFile(rv, prefix, data)
 }
 
-// CallSetDefaults 调用 SetDefualts 方法设置默认值。
+// CallSetDefaults 调用 SetDefualts 设置对象的字段默认值。
 func CallSetDefaults(v interface{}) error {
 	rv := reflect.ValueOf(v)
 	return callSetDefaults(rv)
@@ -63,14 +63,12 @@ func callSetDefaults(rv reflect.Value) error {
 	return methodCaller(rv, "SetDefaults")
 }
 
-// CallInit 调用 SetDefaults 和 Init 方法
-func CallInit(v interface{}) error {
+// CallInitialize to initilize the target which already have variables
+// 初始化对象。
+// 要求对象字段赋值。 在初始化时，可以进行对象的健康检查， 例如数据库连接。
+func CallInitialize(v interface{}) error {
 	rv := reflect.ValueOf(v)
-	return callInit(rv)
-}
-
-func callInit(rv reflect.Value) error {
-	return methodCaller(rv, "SetDefaults", "Init")
+	return methodCaller(rv, "Initialize")
 }
 
 // CallMethods 调用自定义方法名字
@@ -78,3 +76,14 @@ func CallMethods(v interface{}, methods ...string) error {
 	rv := reflect.ValueOf(v)
 	return methodCaller(rv, methods...)
 }
+
+/* 现在 SetDefaults 和 Init 交给用户自己调用*/
+// CallInit 调用 SetDefaults 和 Init 方法
+// func CallInit(v interface{}) error {
+// 	rv := reflect.ValueOf(v)
+// 	return callInit(rv)
+// }
+
+// func callInit(rv reflect.Value) error {
+// 	return methodCaller(rv, "SetDefaults", "Init")
+// }

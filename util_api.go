@@ -35,9 +35,6 @@ func MustExport(prefix string, config interface{}) {
 // overwrite if variable already exists
 func Import(prefix string, config interface{}, cfgs ...string) error {
 
-	// initial defualt config
-	CallSetDefaults(config)
-
 	// read variables from files
 	files := append([]string{"config.yml"}, cfgs...)
 	for _, file := range files {
@@ -54,7 +51,13 @@ func Import(prefix string, config interface{}, cfgs ...string) error {
 	}
 
 	// read variables from environment
-	return UnmarshalEnv(config, prefix)
+	err := UnmarshalEnv(config, prefix)
+	if err != nil {
+		return err
+	}
+
+	// set default and initial
+	return CallSetDefaults(config)
 }
 
 // MustImport import variable from config.yml and additional config files and environment, panic if error

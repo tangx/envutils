@@ -171,8 +171,8 @@ func Test_ReadEnv(t *testing.T) {
 type Manager struct {
 	ClassName  string `env:""`
 	Filesystem *FileSystem
-	filesystem *FileSystem // 私有字段， 不会出现在配置中
-	FFSys      FileSystem
+	// filesystem *FileSystem // 私有字段， 不会出现在配置中
+	FFSys FileSystem
 }
 
 type FileSystem struct {

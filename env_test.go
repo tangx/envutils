@@ -171,7 +171,7 @@ func Test_ReadEnv(t *testing.T) {
 type Manager struct {
 	ClassName  string `env:""`
 	Filesystem *FileSystem
-	filesystem *FileSystem
+	filesystem *FileSystem // 私有字段， 不会出现在配置中
 	FFSys      FileSystem
 }
 
@@ -193,9 +193,66 @@ func Test_ConfP(t *testing.T) {
 		Manager: &Manager{},
 	}
 
-	data, err := Marshal(config, "CONFIG")
+	data, err := Marshal(config, "AppName")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("%s\n", data)
+}
+
+// Test 3
+type MysqlServer struct {
+	ListenAddr string `env:"listenAddr"`
+	Auth       string `env:"auth"`
+	DBName     string `env:"dbName"`
+}
+
+func (my *MysqlServer) SetDefaults() {
+	if my.ListenAddr == "" {
+		my.ListenAddr = "localhost:3306"
+	}
+}
+
+type RedisServer struct {
+	DSN string `env:"dsn"`
+}
+
+func (r *RedisServer) SetDefaults() {
+	if r.DSN == "" {
+		r.DSN = "redis://:Password@localhost:6379/0"
+	}
+}
+
+func Test_ConfP_Server(t *testing.T) {
+
+	config := &struct {
+		MysqlServer *MysqlServer
+		RedisServer *RedisServer
+	}{
+		MysqlServer: &MysqlServer{},
+		RedisServer: &RedisServer{},
+	}
+
+	// 设置默认值
+	err := CallSetDefaults(config)
+	if err != nil {
+		panic(err)
+	}
+
+	// 序列化配置
+	data, err := Marshal(config, "AppName")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%s\n", data)
+	_ = os.WriteFile("default.yml", data, os.ModePerm)
+
+	err = UnmarshalFile(config, "AppName", "config.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("my_auth =>", config.MysqlServer.Auth)
+	fmt.Println("redis_dsn =>", config.RedisServer.DSN)
+
 }

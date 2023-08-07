@@ -8,37 +8,63 @@ go env utils
 
 ```go
 
-func dump() {
+// Test 3
+type MysqlServer struct {
+	ListenAddr string `env:"listenAddr"`
+	Auth       string `env:"auth"`
+	DBName     string `env:"dbName"`
+}
 
-	server := &Server{
-		Address: "192.168.100.100",
+func (my *MysqlServer) SetDefaults() {
+	if my.ListenAddr == "" {
+		my.ListenAddr = "localhost:3306"
 	}
+}
+
+type RedisServer struct {
+	DSN string `env:"dsn"`
+}
+
+func (r *RedisServer) SetDefaults() {
+	if r.DSN == "" {
+		r.DSN = "redis://:Password@localhost:6379/0"
+	}
+}
+
+func Test_ConfP_Server(t *testing.T) {
 
 	config := &struct {
-		Server *Server
+		MysqlServer *MysqlServer
+		RedisServer *RedisServer
 	}{
-		Server: server,
+		MysqlServer: &MysqlServer{},
+		RedisServer: &RedisServer{},
 	}
 
-	err := envutils.CallSetDefaults(config)
+	// 设置默认值
+	err := CallSetDefaults(config)
 	if err != nil {
 		panic(err)
 	}
 
-	b, err := envutils.Marshal(config, appname)
+	// 序列化配置
+	data, err := Marshal(config, "AppName")
 	if err != nil {
 		panic(err)
 	}
-	_ = os.WriteFile(cfgfile, b, os.ModePerm)
+	fmt.Printf("%s\n", data)
 }
+
 ```
 
 2. 查看保存文件
 
 ```bash
 # cat config.yml 
-AppName__Server_address: 192.168.100.100
-AppName__Server_port: 80
+AppName__MysqlServer_auth: ""
+AppName__MysqlServer_dbName: ""
+AppName__MysqlServer_listenAddr: localhost:3306
+AppName__RedisServer_dsn: redis://:Password@localhost:6379/0
 ```
 
 3. 从文件中读取配置

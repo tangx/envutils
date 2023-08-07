@@ -1,6 +1,7 @@
 package envutils
 
 import (
+	"log"
 	"os"
 )
 
@@ -33,14 +34,26 @@ func MustExport(prefix string, config interface{}) {
 // then import variable from env to config struct
 // overwrite if variable already exists
 func Import(prefix string, config interface{}, cfgs ...string) error {
+
+	// initial defualt config
+	CallSetDefaults(config)
+
+	// read variables from files
 	files := append([]string{"config.yml"}, cfgs...)
 	for _, file := range files {
+
 		err := UnmarshalFile(config, prefix, file)
 		if err != nil {
+			if os.IsNotExist(err) {
+				log.Printf("WARN: skip, %v\n", err)
+				continue
+			}
+
 			return err
 		}
 	}
 
+	// read variables from environment
 	return UnmarshalEnv(config, prefix)
 }
 

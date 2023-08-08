@@ -33,6 +33,7 @@ func MustExport(prefix string, config interface{}) {
 // Import variables from config.yml and additional config files to config struct
 // then import variable from env to config struct
 // overwrite if variable already exists
+// notice: call CallInitialize after importing
 func Import(prefix string, config interface{}, cfgs ...string) error {
 
 	// read variables from files
@@ -57,11 +58,13 @@ func Import(prefix string, config interface{}, cfgs ...string) error {
 	}
 
 	// set default and initial
-	return CallMethods(config, "SetDefaults", "Initialize")
+	// return CallMethods(config, "SetDefaults", "Initialize")
+	return CallSetDefaults(config)
 }
 
 // MustImport import variable from config.yml and additional config files and environment, panic if error
 // Get more detail, see Import API
+// notice: call CallInitialize after importing
 func MustImport(prefix string, config interface{}, cfgs ...string) {
 	err := Import(prefix, config, cfgs...)
 	if err != nil {
